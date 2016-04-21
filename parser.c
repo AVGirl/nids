@@ -8,9 +8,310 @@
 
 int main()
 {
-	configrules("community.rules");
+	ListRoot *listroot = configrules("community.rules");
+	precreatearray(listroot);
+	freeall(listroot);
 //	configrules("test-rules");
 	return 0;
+}
+
+void buildACarray(RuleSetRoot *rsr, OptFpList *fplist)
+{
+	// goto function
+	int state = 0, i = 0;
+	char ch;
+
+	while(1)
+	{
+		ch = fplist->context[i];
+		if(ch == '\0') break;
+		else if(rsr->acArray[state][(int)ch] & 0xffff == 0) break;
+		else
+		{
+			state = rsr->acArray[state][(int)ch];
+			i++;
+		}
+	}
+
+	if(ch != '\0')
+	{
+		while(ch != '\0')
+		{
+			newState++;
+			rsr->acArray[state][(int)ch] = newState;
+			state = newState;
+			ch = fplist->context[i];
+			i++;
+		}
+		if(rsr->acArray[state][(int)ch] & 0xffff0000 != 0)
+		{
+			//printf(""); // Same contents with different index;
+			fplist->index = (rsr->acArray[state][(int)ch] & 0xffff0000) >> 16;
+		}
+		else
+		{
+			rsr->acArray[state][(int)ch] = fplist->index << 16;
+		}
+	}
+}
+
+void buildfailfunc(RuleSetRoot *rsr)
+{
+	int tmp_queue[MAX_STATE];
+	int flag_queue = -1;
+	int tail_queue = -1;
+	int state = 0;
+	int i;
+
+	memset(tmp_queue, 0, MAX_STATE * sizeof(int)); 
+	for(i = 0; i < 256; i++)
+	{
+		if(rsr->acArray[state][i] != 0)
+		{ printf("processing the queue\n"); // For Debug
+			tail_queue++;
+			tmp_queue[tail_queue] = rsr->acArray[state][i] & 0x0ffff;
+		}
+	}
+
+	while(tail_queue == flag_queue)
+	{
+		flag_queue++;
+		state = tmp_queue[flag_queue];
+		for(i = 0; i < 256; i++)
+		{
+			if(rsr->acArray[state][i] != 0)
+			{ printf("processing the queue\n"); // For Debug
+				tail_queue++;
+				tmp_queue[tail_queue] = rsr->acArray[state][i] & 0x0ffff;
+				int tmp_state = 0;
+				tmp_state = rsr->failure[state];
+				while(rsr->acArray[tmp_state][i] == 0) tmp_state = rsr->failure[tmp_state];
+
+				rsr->failure[tmp_queue[tail_queue]] = rsr->acArray[tmp_state][i];
+			}
+		}
+	}
+}
+
+void buildContPattMatch(AcNode *acNode, int index)
+{
+	AcNode *tmp;
+	tmp = acNode->chdNode;
+	while(tmp != NULL)
+	{
+		if(tmp->contId == index)
+		{
+			acNode = tmp;
+			return;
+		}
+		else tmp = tmp->broNode;
+	}
+
+	AcNode *tmp_acNode;
+	tmp_acNode = (AcNode *)malloc(sizeof(ACNode));
+	tmp_acNode->contId = index;
+	tmp_acNode->chdNode = NULL;
+	tmp_acNode->broNode = NULL;
+	tmp_acNode->failNode = NULL;
+	tmp_acNode->pattId = -1;
+	tmp_acNode->root = false;
+}
+
+void buildfailContPattMatch(AcNode *acNode)
+{
+	AcNode *tmp_acNode;
+	tmp_acNode = acNode;
+	AcQueue *flag_ac = NULL;
+	AcQueue *tail_ac = NULL;
+	AcQueue *tmp_ac;
+	AcQueue *tmp;
+
+	tmp_acNode = acNode->chdNode;
+	if(tmp_acNode != NULL)
+	{
+		tmp_acNode->failNode = acNode;
+		flag_ac = (AcQueue *)malloc(sizeof(AcQueue));
+		flag_ac->ac = tmp_acNode;
+		flag_ac->next = NULL;
+		tail_ac = flag_ac;
+		tmp_acNode = tmp_acNode->broNode;
+	}
+	while(tmp_acNode != NULL)
+	{
+		tmp_acNode->failNode = acNode;
+		tmp_ac = (AcQueue *)malloc(sizeof(AcQueue));
+		tmp_ac->ac = tmp_acNode;
+		tmp_ac->next = NULL;
+		tail_ac->next = tmp_ac;
+		tail_ac = tmp_ac;
+		tmp_acNode = tmp_acNode->broNode;
+	}
+
+	while(flag_ac != NULL) // flag_ac is the top of the AcQueue.
+	{
+		tmp = flag_ac;
+		flag_ac = flag->next;
+		tmp_acNode = tmp->ac->chdNode;
+		while(tmp_acNode != NULL) // add the original flag_ac(tmp->ac)'s child nodes and find the failure node of each child(tmp_acNode)
+		{
+			// failure function
+			AcNode *upper_fail = tmp->ac->failNode;
+			while(1)
+			{
+				/*if(upper_fail->root == true)
+				{
+					AcNode *upper_acNode = upper_fail->chdNode;
+					while(upper_acNode != NULL)
+					{
+						if(upper_acNode->contId == tmp_acNode->contId) break;
+						upper_acNode = upper_acNode->broNode;
+					}
+					if(upper_acNode != NULL)
+					{
+						tmp_acNode->failNode = upper_acNode;
+						break;
+					}
+					tmp_acNode->failNode = upper_acNode;
+				}
+				else
+				{
+					AcNode *upper_acNode = upper_fail->chdNode;
+					while(upper_acNode != NULL)
+					{
+						if(upper_acNode->contId == tmp_acNode->contId) break;
+						upper_acNode = upper_acNode->broNode;
+					}
+					if(upper_acNode != NULL)
+					{
+						tmp_acNode->failNode = upper_acNode;
+						break;
+					}
+					upper_fail = upper_fail->failNode;
+				}*/
+				AcNode *upper_acNode = upper_fail->chdNode;
+				while(upper_acNode != NULL)
+				{
+					if(upper_acNode->contId == tmp_acNode->contId) break;
+					upper_acNode = upper_acNode->broNode;
+				}
+				if(upper_acNode != NULL)
+				{
+					tmp_acNode->failNode = upper_acNode; // tmp_acNode is the child node.
+					break;
+				}
+				if(upper_fail->root == false) upper_fail = upper_fail->failNode;
+				else
+				{
+					tmp_acNode->failNode = upper_fail;
+					break;
+				}
+			}
+			tmp_ac = (AcQueue *)malloc(sizeof(AcQueue));
+			tmp_ac->ac = tmp_acNode;
+			tmp_ac->next = NULL;
+			tail_ac->next = tmp_ac;
+			tail_ac = tmp_ac;
+			tmp_acNode = tmp_acNode->broNode;
+		}
+		// free the tmp(the original flag_ac) of AcQueue. Not the AcNode!
+		free(tmp);
+	}
+}
+
+void createarray(RuleTreeRoot *treeroot)
+{
+	printf("######Create Array...\n");
+
+	if(treeroot->rtn == NULL) return;
+	else
+	{
+		RuleSetRoot *rsr = (RuleSetRoot *)malloc(sizeof(RuleSetRoot));
+		memset(rsr->acArray, 0, MAX_STATE * 256 * sizeof(uint32_t));
+		memset(rsr->failure, 0, MAX_STATE * sizeof(int16_t));
+		rsr->contPattMatch = (AcNode *)malloc(sizeof(AcNode));
+		rsr->contPattMatch->contId = -1; // The root of ContPattMatch List.
+		rsr->contPattMatch->chdNode = NULL;
+		rsr->contPattMatch->broNode = NULL;
+		rsr->contPattMatch->failNode = rsr->contPattMatch;
+		rsr->contPattMatch->pattId = -1; // No pattern here.
+		rsr->contPattMatch->root = true; 
+
+		treeroot->rsr = rsr;
+		newState = 0;
+		RuleTreeNode *treenode;
+		treenode = treeroot->rtn;
+		while(treenode != NULL)
+		{
+			OptTreeNode *optnode;
+			optnode = treenode->down;
+			while(optnode != NULL)
+			{
+				int pattId = optnode->evalIndex;
+				AcNode *tmp_acNode;
+				tmp_acNode = rsr->contPattMatch;
+				OptFpList *fplist;
+				fplist = optnode->opt_func;
+				while(fplist != NULL)
+				{
+					buildACarray(rsr, fplist);
+					buildContPattMatch(tmp_acNode, fplist->index);
+					fplist = fplist->next;
+				}
+				if(tmp_acNode->pattId != -1)
+				{
+					printf("!!!!!!Error: Different patterns have the same rule options!\n");
+				}
+				else
+				{
+					tmp_acNode->pattId = pattId;
+				}
+			}
+		}
+		buildfailfunc(rsr);
+		buildfailContPattMatch(rsr->contPattMatch);
+	}
+
+	printf("######End of Creating Array. --- Num of State:%d\n", newState);
+
+/*	printf("######Begin of Creating Content Pattern Match AC List...\n");
+
+	if(treeroot->rtn == NULL) return;
+	else
+	{
+		RuleTreeNode *treenode;
+		treenode = treeroot->rtn;
+		while(treenode != NULL)
+		{
+			OptTreeNode *optnode;
+			optnode = treenode->down;
+			while(optnode != NULL)
+			{
+				OptFpList *fplist;
+				fplist = optnode->opt_func;
+				while()
+			}
+		}
+	}
+	printf("######ENd of Creating Content Pattern Match AC List\n");*/
+}
+
+void create(RuleListRoot *rulelistroot)
+{
+	int i;
+	for(i = 0; i < MAX_PORTS; i++)
+	{
+		createarray(rulelistroot->prmSrcGroup[i]);
+		createarray(rulelistroot->prmDstGroup[i]);
+	}
+	createarray(rulelistroot->prmGeneric);
+}
+
+void precreatearray(ListRoot *listroot)
+{
+	create(listroot->IpListRoot);
+	create(listroot->TcpListRoot);
+	create(listroot->UdpListRoot);
+	create(listroot->IcmpListRoot);
 }
 
 /*
@@ -411,8 +712,28 @@ RuleTreeNode *parseruleoption(RuleTreeNode *rtn, char *ch_buffer, int id)
 				}
 				len = p2 - option - 1;
 				pChar = (char *)malloc((len + 1) * sizeof(char));
-				memcpy(pChar, option, len * sizeof(char));
-				pChar[len] = '\0';
+				char *ptr_vertline = NULL;
+				ptr_vertline = strstr(option, "|");
+				if(ptr_vertline == NULL || (ptr_vertline != NULL && (ptr_vertline - option) > len))
+				{
+					memcpy(pChar, option, len * sizeof(char));
+					pChar[len] = '\0';
+				}
+				else
+				{
+					int j = 0, k = 0;
+					int flag_vertline = 0;
+					while(k < len) // ignore bytecode
+					{
+						if(option[k] == '|') flag_vertline++;
+						else if(option[k] != '|' && flag_vertline % 2 == 0) pChar[j++] = option[k];
+						else ;
+						k++;
+					}
+					if(j == 0) pChar[j++] = 't'; // ignore bytecode
+					pChar[j] = '\0';
+					len = j;
+				}
 
 				if(i == 0)
 					opt_node->msg = pChar;
@@ -421,6 +742,7 @@ RuleTreeNode *parseruleoption(RuleTreeNode *rtn, char *ch_buffer, int id)
 					OptFpList *opt_fp;
 					opt_fp = (OptFpList *)malloc(sizeof(OptFpList));
 					opt_fp->context = pChar;
+					opt_fp->index = contIndex;
 					opt_fp->depth = 0;
 					opt_fp->offset = 0;
 					opt_fp->distance = 0;
@@ -434,6 +756,8 @@ RuleTreeNode *parseruleoption(RuleTreeNode *rtn, char *ch_buffer, int id)
 					opt_fp->next = tmp_ptr_opt_fp;
 
 					if(exclamation == 1) opt_node->opt_func->flags += fsym[i];
+
+					contIndex++;
 				}
 
 				if(i == 0) printf("msg: %s\n", pChar);
@@ -795,7 +1119,7 @@ void freeall(ListRoot *listroot)
 	free(listroot);
 }
 
-int configrules(char *filename)
+ListRoot *configrules(char *filename)
 {
 	ListRoot *listroot = (ListRoot *)malloc(sizeof(ListRoot));
 	listroot->IpListRoot = (RuleListRoot *)malloc(sizeof(RuleListRoot));
@@ -878,7 +1202,7 @@ int configrules(char *filename)
 	if(!readfile(listroot, filename))
 	{
 		printf("\n\n$$ Error(s)!");
-		return 0;
+		return NULL;
 	}
 
 /*	RuleTreeNode *ptr_node;
@@ -916,8 +1240,5 @@ int configrules(char *filename)
 		free(free_ptr_node);
 	}*/
 
-	// free !!!
-	freeall(listroot);
-
-	return 1;
+	return listroot;
 }
