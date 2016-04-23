@@ -6,13 +6,40 @@
 
 #define MAX_CH_BUF 10000
 
-int main()
+void printAcNodeTree(AcNode *acNode, int i)
 {
-	ListRoot *listroot = configrules("community.rules");
-	precreatearray(listroot);
-	freeall(listroot);
-//	configrules("test-rules");
-	return 0;
+	while(acNode != NULL)
+	{
+		//printf("depth: %4d, contId: %4d; pattId: %4d; failId: %4d; root: %4d; str: %s\n", i, acNode->contId, acNode->pattId, acNode->failNode->contId, acNode->root, acNode->str);
+		printAcNodeTree(acNode->chdNode, i + 1);
+		acNode = acNode->broNode;
+	}
+}
+
+void test(ListRoot *listroot)
+{
+	RuleSetRoot *rsr;
+	rsr = listroot->TcpListRoot->prmGeneric->rsr;
+	
+	printf("\n\nTest...\n");
+	printf("Printf acArray...\n");
+	int i, j;
+	for(i = 0; i < MAX_STATE; i++)
+	{
+		for(j = 0; j < 256; j++)
+		{
+			if(rsr->acArray[i][j] != 0) printf("(%d, %d)---%d\n", i, j, rsr->acArray[i][j]);
+		}
+	}
+	printf("Printf failure...\n");
+	for(i = 0; i < MAX_STATE; i++)
+	{
+		if(rsr->failure[i] != 0) printf("--%d  %d\n", i, rsr->failure[i]);
+	}
+	printf("Printf contPattMatch...\n");
+	//printAcNodeTree(rsr->contPattMatch, 0);
+
+	printf("Test End.\n");
 }
 
 void buildACarray(RuleSetRoot *rsr, OptFpList *fplist)
@@ -25,7 +52,7 @@ void buildACarray(RuleSetRoot *rsr, OptFpList *fplist)
 	{
 		ch = fplist->context[i];
 		if(ch == '\0') break;
-		else if(rsr->acArray[state][(int)ch] & 0xffff == 0) break;
+		else if((rsr->acArray[state][(int)ch] & 0xffff) == 0) break;
 		else
 		{
 			state = rsr->acArray[state][(int)ch];
@@ -40,18 +67,13 @@ void buildACarray(RuleSetRoot *rsr, OptFpList *fplist)
 			newState++;
 			rsr->acArray[state][(int)ch] = newState;
 			state = newState;
-			ch = fplist->context[i];
-			i++;
+			ch = fplist->context[++i];
 		}
-		if(rsr->acArray[state][(int)ch] & 0xffff0000 != 0)
-		{
-			//printf(""); // Same contents with different index;
-			fplist->index = (rsr->acArray[state][(int)ch] & 0xffff0000) >> 16;
-		}
-		else
-		{
-			rsr->acArray[state][(int)ch] = fplist->index << 16;
-		}
+		rsr->acArray[state][(int)ch] = fplist->index << 16;
+	}
+	else
+	{
+		fplist->index = (rsr->acArray[state][(int)ch] & 0xffff0000) >> 16;
 	}
 }
 
@@ -93,13 +115,14 @@ void buildfailfunc(RuleSetRoot *rsr)
 	}
 }
 
-void buildContPattMatch(AcNode *acNode, int index)
+AcNode *buildContPattMatch(AcNode *acNode, OptFpList *fplist)
 {
-	AcNode *tmp;
-	tmp = acNode->chdNode;
+	int flag = 0;
+	AcNode *tmp = acNode->chdNode;
 	while(tmp != NULL)
 	{
-		if(tmp->contId == index)
+		flag = 1;
+		if(tmp->contId == fplist->index)
 		{
 			acNode = tmp;
 			return;
@@ -108,13 +131,27 @@ void buildContPattMatch(AcNode *acNode, int index)
 	}
 
 	AcNode *tmp_acNode;
-	tmp_acNode = (AcNode *)malloc(sizeof(ACNode));
-	tmp_acNode->contId = index;
+	tmp_acNode = (AcNode *)malloc(sizeof(AcNode));
+	tmp_acNode->str = fplist->context;
+	tmp_acNode->contId = fplist->index;
 	tmp_acNode->chdNode = NULL;
 	tmp_acNode->broNode = NULL;
 	tmp_acNode->failNode = NULL;
-	tmp_acNode->pattId = -1;
-	tmp_acNode->root = false;
+	tmp_acNode->pattId = 0;
+	tmp_acNode->root = -1;
+	if(flag == 0)
+	{
+		acNode->chdNode = tmp_acNode;
+		acNode = acNode->chdNode;
+	}
+	else
+	{
+		tmp = acNode->chdNode->broNode;
+		acNode->chdNode->broNode = tmp_acNode;
+		tmp_acNode->broNode = tmp;
+		acNode = tmp_acNode;
+	}
+	return acNode;
 }
 
 void buildfailContPattMatch(AcNode *acNode)
@@ -150,7 +187,7 @@ void buildfailContPattMatch(AcNode *acNode)
 	while(flag_ac != NULL) // flag_ac is the top of the AcQueue.
 	{
 		tmp = flag_ac;
-		flag_ac = flag->next;
+		flag_ac = flag_ac->next;
 		tmp_acNode = tmp->ac->chdNode;
 		while(tmp_acNode != NULL) // add the original flag_ac(tmp->ac)'s child nodes and find the failure node of each child(tmp_acNode)
 		{
@@ -199,7 +236,7 @@ void buildfailContPattMatch(AcNode *acNode)
 					tmp_acNode->failNode = upper_acNode; // tmp_acNode is the child node.
 					break;
 				}
-				if(upper_fail->root == false) upper_fail = upper_fail->failNode;
+				if(upper_fail->root == -1) upper_fail = upper_fail->failNode; // -1 is not root.
 				else
 				{
 					tmp_acNode->failNode = upper_fail;
@@ -220,52 +257,53 @@ void buildfailContPattMatch(AcNode *acNode)
 
 void createarray(RuleTreeRoot *treeroot)
 {
-	printf("######Create Array...\n");
-
 	if(treeroot->rtn == NULL) return;
 	else
-	{
+	{	printf("\n\n######Create array...\n");
 		RuleSetRoot *rsr = (RuleSetRoot *)malloc(sizeof(RuleSetRoot));
 		memset(rsr->acArray, 0, MAX_STATE * 256 * sizeof(uint32_t));
 		memset(rsr->failure, 0, MAX_STATE * sizeof(int16_t));
 		rsr->contPattMatch = (AcNode *)malloc(sizeof(AcNode));
+		rsr->contPattMatch->str = "";
 		rsr->contPattMatch->contId = -1; // The root of ContPattMatch List.
 		rsr->contPattMatch->chdNode = NULL;
 		rsr->contPattMatch->broNode = NULL;
 		rsr->contPattMatch->failNode = rsr->contPattMatch;
-		rsr->contPattMatch->pattId = -1; // No pattern here.
-		rsr->contPattMatch->root = true; 
+		rsr->contPattMatch->pattId = 0; // No pattern here.
+		rsr->contPattMatch->root = 1; // true = 1; root = 1 
 
 		treeroot->rsr = rsr;
 		newState = 0;
 		RuleTreeNode *treenode;
 		treenode = treeroot->rtn;
 		while(treenode != NULL)
-		{
+		{printf("treenode\n");
 			OptTreeNode *optnode;
 			optnode = treenode->down;
 			while(optnode != NULL)
-			{
+			{printf("optnode\n");
 				int pattId = optnode->evalIndex;
 				AcNode *tmp_acNode;
 				tmp_acNode = rsr->contPattMatch;
 				OptFpList *fplist;
 				fplist = optnode->opt_func;
 				while(fplist != NULL)
-				{
+				{printf("fplist\n");
 					buildACarray(rsr, fplist);
-					buildContPattMatch(tmp_acNode, fplist->index);
+					tmp_acNode = buildContPattMatch(tmp_acNode, fplist);
 					fplist = fplist->next;
 				}
-				if(tmp_acNode->pattId != -1)
+				if(tmp_acNode->pattId != 0)
 				{
-					printf("!!!!!!Error: Different patterns have the same rule options!\n");
+					printf("!!!!!!Error: Different patterns have the same rule options!---%d\n", tmp_acNode->pattId);
 				}
 				else
 				{
 					tmp_acNode->pattId = pattId;
 				}
+				optnode = optnode->next;
 			}
+			treenode = treenode->right;
 		}
 		buildfailfunc(rsr);
 		buildfailContPattMatch(rsr->contPattMatch);
@@ -643,6 +681,7 @@ RuleTreeNode *parseruleoption(RuleTreeNode *rtn, char *ch_buffer, int id)
 	opt_node->msg = NULL;
 	opt_node->next = NULL;
 	opt_node->rtn = rtn;
+	rtn->down = opt_node;
 
 	char *sym[SYM_NUM];
 	int fsym[SYM_NUM];
@@ -858,7 +897,8 @@ void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 	RuleTreeRoot *pRoot;
 	RuleTreeNode *ptr_rtn;
 	int flag = 0;
-	if(rtn->flags & 0x00000007 == 0x01 || rtn->flags & 0x00000007 == 0x04) // direction is "->" || "<>"
+//	printf("%d %d\n", rtn->flags&0x00000007&1, (rtn->flags&0x00000007)==0x01);printf("%d\n", 1&0x1 == 1);
+	if(rtn->flags & 0x00000007 & 0x01 || rtn->flags & 0x00000007 & 0x04) // direction is "->" || "<>"
 	{
 		if(rtn->hdp[0] == 0 && rtn->ldp[0] != 0 && rtn->ldp[1] == 0) 
 		{
@@ -889,7 +929,7 @@ void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 			rtn->right = ptr_rtn;
 		}
 	}
-	if(rtn->flags & 0x00000007 == 0x02 || rtn->flags & 0x00000007 == 0x04) // direction is "<-" || "<>"
+	if(rtn->flags & 0x00000007 & 0x02 || rtn->flags & 0x00000007 & 0x04) // direction is "<-" || "<>"
 	{
 		if(rtn->hdp[0] == 0 && rtn->ldp[0] != 0 && rtn->ldp[1] == 0) 
 		{
@@ -1241,4 +1281,15 @@ ListRoot *configrules(char *filename)
 	}*/
 
 	return listroot;
+}
+
+int main()
+{
+	ListRoot *listroot;
+	listroot = configrules("community.rules");
+	//listroot = configrules("test-rules-1");
+	precreatearray(listroot);
+	test(listroot);
+	freeall(listroot);
+	return 0;
 }

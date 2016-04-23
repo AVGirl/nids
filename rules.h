@@ -29,17 +29,18 @@
 #define HTTP_STAT_MESSAGE 0x8000
 #define FAST_PATTERN 0x10000
 
-extern int contIndex = 0;
-extern int newState = 0; // newState must be less than or equal to 2^16
+int contIndex = 0;
+int newState = 0; // newState must be less than or equal to 2^16
 
 typedef struct _acNode
 {
+	char *str;
 	int contId;
 	struct _acNode *chdNode;
 	struct _acNode *broNode;
 	struct _acNode *failNode;
 	int pattId;
-	bool root;
+	int root;
 }AcNode;
 
 typedef struct _acQueue
@@ -73,7 +74,7 @@ typedef struct _RuleSetRoot
 {
 	uint32_t acArray[MAX_STATE][256];
 	int16_t failure[MAX_STATE];
-	acNode *contPattMatch;
+	AcNode *contPattMatch;
 }RuleSetRoot;
 
 typedef struct _OptTreeNode
@@ -145,14 +146,6 @@ typedef struct _PatternContentArray
 	ContentIndexArray *indexArray;
 	OptFpList **contentIndex;
 }PatternContentArray;*/
-
-typedef struct _acNode
-{
-	acNode *chdNode;
-	acNode *broNode;
-	acNode *failNode;
-	int pattern;
-}AcNode;
 
 typedef struct _TmpRuleHeader
 {
