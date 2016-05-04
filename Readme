@@ -1,0 +1,3 @@
+The AC array is 2D array
+
+--> probably lead to Segmentation fault because of use-up of stack.

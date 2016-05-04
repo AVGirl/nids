@@ -6,41 +6,8 @@
 
 #define MAX_CH_BUF 10000
 
-void printAcNodeTree(AcNode *acNode, int i)
-{
-	while(acNode != NULL)
-	{
-		//printf("depth: %4d, contId: %4d; pattId: %4d; failId: %4d; root: %4d; str: %s\n", i, acNode->contId, acNode->pattId, acNode->failNode->contId, acNode->root, acNode->str);
-		printAcNodeTree(acNode->chdNode, i + 1);
-		acNode = acNode->broNode;
-	}
-}
-
-void test(ListRoot *listroot)
-{
-	RuleSetRoot *rsr;
-	rsr = listroot->TcpListRoot->prmGeneric->rsr;
-	
-	printf("\n\nTest...\n");
-	printf("Printf acArray...\n");
-	int i, j;
-	for(i = 0; i < MAX_STATE; i++)
-	{
-		for(j = 0; j < 256; j++)
-		{
-			if(rsr->acArray[i][j] != 0) printf("(%d, %d)---%d\n", i, j, rsr->acArray[i][j]);
-		}
-	}
-	printf("Printf failure...\n");
-	for(i = 0; i < MAX_STATE; i++)
-	{
-		if(rsr->failure[i] != 0) printf("--%d  %d\n", i, rsr->failure[i]);
-	}
-	printf("Printf contPattMatch...\n");
-	//printAcNodeTree(rsr->contPattMatch, 0);
-
-	printf("Test End.\n");
-}
+int contIndex = 0;
+int newState = 0; // newState must be less than or equal to 2^16
 
 void buildACarray(RuleSetRoot *rsr, OptFpList *fplist)
 {
@@ -187,7 +154,6 @@ void buildfailContPattMatch(AcNode *acNode)
 	while(flag_ac != NULL) // flag_ac is the top of the AcQueue.
 	{
 		tmp = flag_ac;
-		flag_ac = flag_ac->next;
 		tmp_acNode = tmp->ac->chdNode;
 		while(tmp_acNode != NULL) // add the original flag_ac(tmp->ac)'s child nodes and find the failure node of each child(tmp_acNode)
 		{
@@ -252,6 +218,7 @@ void buildfailContPattMatch(AcNode *acNode)
 		}
 		// free the tmp(the original flag_ac) of AcQueue. Not the AcNode!
 		free(tmp);
+		flag_ac = flag_ac->next;
 	}
 }
 
@@ -270,32 +237,33 @@ void createarray(RuleTreeRoot *treeroot)
 		rsr->contPattMatch->broNode = NULL;
 		rsr->contPattMatch->failNode = rsr->contPattMatch;
 		rsr->contPattMatch->pattId = 0; // No pattern here.
-		rsr->contPattMatch->root = 1; // true = 1; root = 1 
+		rsr->contPattMatch->root = 1; // true = 1, meaning root = 1.
 
 		treeroot->rsr = rsr;
 		newState = 0;
 		RuleTreeNode *treenode;
 		treenode = treeroot->rtn;
 		while(treenode != NULL)
-		{printf("treenode\n");
+		{//printf("treenode\n");
 			OptTreeNode *optnode;
 			optnode = treenode->down;
 			while(optnode != NULL)
-			{printf("optnode\n");
+			{//printf("optnode\n");
 				int pattId = optnode->evalIndex;
 				AcNode *tmp_acNode;
 				tmp_acNode = rsr->contPattMatch;
 				OptFpList *fplist;
 				fplist = optnode->opt_func;
 				while(fplist != NULL)
-				{printf("fplist\n");
+				{//printf("fplist\n");
 					buildACarray(rsr, fplist);
 					tmp_acNode = buildContPattMatch(tmp_acNode, fplist);
 					fplist = fplist->next;
 				}
 				if(tmp_acNode->pattId != 0)
 				{
-					printf("!!!!!!Error: Different patterns have the same rule options!---%d\n", tmp_acNode->pattId);
+				//	printf("!!!!!!Error: Different patterns have the same rule options!---%d\n", tmp_acNode->pattId);
+					optnode->evalIndex = tmp_acNode->pattId; // Different patterns have the same rule options!!!
 				}
 				else
 				{
@@ -351,45 +319,6 @@ void precreatearray(ListRoot *listroot)
 	create(listroot->UdpListRoot);
 	create(listroot->IcmpListRoot);
 }
-
-/*
-int parseruleheader(char *header)
-{
-	char *pattern = "[ ]*alert[ ](tcp|udp|icmp)[ ][^ \t\n]+[ ](any|)";
-
-	regex_t reg;
-	char errbuf[1024];
-	int err, nm = 1; // nm is the num of pattern
-	regmatch_t pmatch[nm];
-
-	if(regcomp(&reg, pattern, REG_EXTENDED) < 0)
-	{
-		regerror(err, &reg, errbuf, sizeof(errbuf));
-		printf("!!!!!!Error: compilation of pattern is wrong! --- %s\n", errbuf);
-		return 0;
-	}
-
-	err = regexec(&reg, header, nm, pmatch, 0);
-	if(err == REG_NOMATCH)
-	{
-		printf("!!!!!!Error: no match in rule header!\n");
-		return 0;
-	}
-	else if(err)
-	{
-		regerror(err, &reg, errbuf, sizeof(errbuf));
-		printf("!!!!!!Error: execuation of matching is wrong! --- %s\n", errbuf);
-		return 0;
-	}
-	else
-	{
-		printf("------Rule Header Match.\n");
-	}
-
-	regfree(&reg);
-	return 1;
-}
-*/
 
 RuleTreeNode *parseruleheader(char *ch_buffer)
 {
@@ -625,12 +554,18 @@ RuleTreeNode *parseruleheader(char *ch_buffer)
 		else if(hport[i] == -2 && hport[i + 1] != -1)
 		{
 			while(unsigned_hport[j - 1] != hport[i + 1] - 1)
-				unsigned_hport[j++] = unsigned_hport[j - 1] + 1;	
+			{
+				unsigned_hport[j] = unsigned_hport[j - 1] + 1;	
+				j++;
+			}
 		}
 		else if(hport[i] == -3 || (hport[i] == -2 && hport[i + 1] == -1))
 		{
 			while(unsigned_hport[j - 1] != (MAX_PORTS - 1))
-				unsigned_hport[j++] = unsigned_hport[j - 1] + 1;
+			{
+				unsigned_hport[j] = unsigned_hport[j - 1] + 1;
+				j++;
+			}
 		}
 		else unsigned_hport[j++] = hport[i];
 	}
@@ -644,12 +579,18 @@ RuleTreeNode *parseruleheader(char *ch_buffer)
 		else if(lport[i] == -2 && lport[i + 1] != -1)
 		{
 			while(unsigned_lport[j - 1] != lport[i + 1] - 1)
-				unsigned_lport[j++] = unsigned_lport[j - 1] + 1;	
+			{	
+				unsigned_lport[j] = unsigned_lport[j - 1] + 1; 
+				j++;
+			}
 		}
 		else if(lport[i] == -3 || (lport[i] == -2 && lport[i + 1] == -1))
 		{ 
 			while(unsigned_lport[j - 1] != (MAX_PORTS - 1))
-				unsigned_lport[j++] = unsigned_lport[j - 1] + 1;
+			{
+				unsigned_lport[j] = unsigned_lport[j - 1] + 1;
+				j++;
+			}
 		}
 		else unsigned_lport[j++] = lport[i];
 	}
@@ -874,6 +815,68 @@ RuleTreeNode *parseruleoption(RuleTreeNode *rtn, char *ch_buffer, int id)
 	return rtn;
 }
 
+RuleTreeNode *duplicatertn(RuleTreeNode *rtn)
+{
+	int i;
+	RuleTreeNode *ptr_rtn;
+	ptr_rtn = (RuleTreeNode *)malloc(sizeof(RuleTreeNode));
+	ptr_rtn->type = rtn->type;
+	// ignore sip & dip ptr_rtn->sip = rtn->sip;
+	for(i = 0; i < MAX_PORTS; i++)
+	{
+		ptr_rtn->hdp[i] = rtn->hdp[i];
+		ptr_rtn->ldp[i] = rtn->ldp[i];
+	}
+	ptr_rtn->flags = rtn->flags;
+	ptr_rtn->right = NULL;
+	ptr_rtn->down = NULL;
+	
+	OptTreeNode *opt;
+	OptTreeNode *ptr_opt;
+	OptTreeNode *tmp_opt;
+	tmp_opt = rtn->down;
+	while(tmp_opt != NULL)
+	{
+		ptr_opt = (OptTreeNode *)malloc(sizeof(OptTreeNode));
+		ptr_opt->opt_func = NULL;
+		ptr_opt->type = tmp_opt->type;
+		ptr_opt->evalIndex = tmp_opt->evalIndex;
+		ptr_opt->msg = tmp_opt->msg;
+		ptr_opt->next = NULL;
+		ptr_opt->rtn = ptr_rtn;
+
+		OptFpList *fp;
+		OptFpList *ptr_fp;
+		OptFpList *tmp_fp;
+		tmp_fp = tmp_opt->opt_func;
+		while(tmp_fp != NULL)
+		{
+			ptr_fp = (OptFpList *)malloc(sizeof(OptFpList));
+			ptr_fp->context = tmp_fp->context;
+			ptr_fp->index = tmp_fp->index;
+			ptr_fp->depth = tmp_fp->depth;
+			ptr_fp->offset = tmp_fp->offset;
+			ptr_fp->distance = tmp_fp->distance;
+			ptr_fp->within = tmp_fp->within;
+			ptr_fp->flags = tmp_fp->flags;
+			ptr_fp->next = NULL;
+
+			if(ptr_opt->opt_func == NULL) ptr_opt->opt_func = ptr_fp;
+			else fp->next = ptr_fp;
+			fp = ptr_fp;
+
+			tmp_fp = tmp_fp->next;
+		}
+
+		if(ptr_rtn->down == NULL) ptr_rtn->down = ptr_opt;
+		else opt->next = ptr_opt;
+		opt = ptr_opt;
+
+		tmp_opt = tmp_opt->next;
+	}
+	return ptr_rtn;
+}
+
 void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 {
 	// in terms of type of PROTOCOL, put parsed rule in the listroot
@@ -897,7 +900,7 @@ void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 	RuleTreeRoot *pRoot;
 	RuleTreeNode *ptr_rtn;
 	int flag = 0;
-//	printf("%d %d\n", rtn->flags&0x00000007&1, (rtn->flags&0x00000007)==0x01);printf("%d\n", 1&0x1 == 1);
+
 	if(rtn->flags & 0x00000007 & 0x01 || rtn->flags & 0x00000007 & 0x04) // direction is "->" || "<>"
 	{
 		if(rtn->hdp[0] == 0 && rtn->ldp[0] != 0 && rtn->ldp[1] == 0) 
@@ -924,6 +927,8 @@ void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 		{
 			pRoot = rulelistroot->prmSrcGroup[rtn->hdp[0]];
 
+			rtn = duplicatertn(rtn);
+
 			ptr_rtn = pRoot->rtn;
 			pRoot->rtn = rtn;
 			rtn->right = ptr_rtn;
@@ -931,6 +936,8 @@ void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 	}
 	if(rtn->flags & 0x00000007 & 0x02 || rtn->flags & 0x00000007 & 0x04) // direction is "<-" || "<>"
 	{
+		if(rtn->flags & 0x00000007 & 0x04) rtn = duplicatertn(rtn);
+
 		if(rtn->hdp[0] == 0 && rtn->ldp[0] != 0 && rtn->ldp[1] == 0) 
 		{
 			pRoot = rulelistroot->prmSrcGroup[rtn->ldp[0]];
@@ -954,6 +961,8 @@ void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)
 		if(flag == 1)
 		{
 			pRoot = rulelistroot->prmSrcGroup[rtn->hdp[0]];
+
+			rtn = duplicatertn(rtn);
 
 			ptr_rtn = pRoot->rtn;
 			pRoot->rtn = rtn;
@@ -1066,97 +1075,6 @@ int readfile(ListRoot* listroot, char *pFName)
 	}
 	fclose(pFile);
 	return 1;
-}
-
-void freeoptfplist(OptFpList *fp)
-{
-	OptFpList *ptr_fp;
-
-	while(fp != NULL)
-	{
-		ptr_fp = fp;
-		fp = ptr_fp->next;
-		free(ptr_fp);
-	}
-}
-void freeopttreenode(OptTreeNode *opt)
-{
-	OptTreeNode *ptr_opt;
-	while(opt != NULL)
-	{
-		ptr_opt = opt;
-		opt = ptr_opt->next;
-		
-		if(ptr_opt->opt_func != NULL) freeoptfplist(ptr_opt->opt_func);
-
-		free(ptr_opt);
-	}
-}
-
-void freerulesetroot(RuleSetRoot *rsr)
-{
-}
-
-void freeruletreenode(RuleTreeNode *rtn)
-{
-	RuleTreeNode *ptr_rtn;
-	while(rtn != NULL)
-	{
-		ptr_rtn = rtn;
-		rtn = ptr_rtn->right;
-
-		if(ptr_rtn->down != NULL) freeopttreenode(ptr_rtn->down);
-
-		free(ptr_rtn);
-	}
-}
-
-void freerulelistroot(RuleListRoot *rulelistroot)
-{
-	RuleTreeRoot *ptr_treeroot;
-	
-	int i;
-	for(i = 0; i < MAX_PORTS; i++)
-	{
-		ptr_treeroot = rulelistroot->prmSrcGroup[i];
-		if(ptr_treeroot->rtn != NULL) freeruletreenode(ptr_treeroot->rtn);
-		if(ptr_treeroot->rsr != NULL) freerulesetroot(ptr_treeroot->rsr);
-		free(ptr_treeroot);
-
-		ptr_treeroot = rulelistroot->prmDstGroup[i];
-		if(ptr_treeroot->rtn != NULL) freeruletreenode(ptr_treeroot->rtn);
-		if(ptr_treeroot->rsr != NULL) freerulesetroot(ptr_treeroot->rsr);
-		free(ptr_treeroot);
-	}
-
-	ptr_treeroot = rulelistroot->prmGeneric;
-	if(ptr_treeroot->rtn != NULL) freeruletreenode(ptr_treeroot->rtn);
-	if(ptr_treeroot->rsr != NULL) freerulesetroot(ptr_treeroot->rsr);
-	
-	free(ptr_treeroot);
-}
-
-void freeall(ListRoot *listroot)
-{
-	RuleListRoot *ptr_rulelistroot;
-	
-	ptr_rulelistroot = listroot->IpListRoot;
-	if(ptr_rulelistroot != NULL) freerulelistroot(ptr_rulelistroot);
-	free(ptr_rulelistroot);
-	
-	ptr_rulelistroot = listroot->TcpListRoot;
-	if(ptr_rulelistroot != NULL) freerulelistroot(ptr_rulelistroot);
-	free(ptr_rulelistroot);
-	
-	ptr_rulelistroot = listroot->UdpListRoot;
-	if(ptr_rulelistroot != NULL) freerulelistroot(ptr_rulelistroot);
-	free(ptr_rulelistroot);
-	
-	ptr_rulelistroot = listroot->IcmpListRoot;
-	if(ptr_rulelistroot != NULL) freerulelistroot(ptr_rulelistroot);
-	free(ptr_rulelistroot);
-
-	free(listroot);
 }
 
 ListRoot *configrules(char *filename)
@@ -1281,15 +1199,4 @@ ListRoot *configrules(char *filename)
 	}*/
 
 	return listroot;
-}
-
-int main()
-{
-	ListRoot *listroot;
-	listroot = configrules("community.rules");
-	//listroot = configrules("test-rules-1");
-	precreatearray(listroot);
-	test(listroot);
-	freeall(listroot);
-	return 0;
 }

@@ -29,9 +29,6 @@
 #define HTTP_STAT_MESSAGE 0x8000
 #define FAST_PATTERN 0x10000
 
-int contIndex = 0;
-int newState = 0; // newState must be less than or equal to 2^16
-
 typedef struct _acNode
 {
 	char *str;
