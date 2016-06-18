@@ -1,0 +1,20 @@
+NIDS-2.0-CPU && Make static library (libnids.a
+
+========================================================================
+Two steps to run the normal project:
+	1) ./go.sh
+	2) ./main-cpu
+
+Now run the the test for rules in file "test-rules". It works.
+If you want to run other test files, please change the string in main.c
+
+========================================================================
+Three steps to run the project with static library libnids.a:
+	1) go to test
+	2) make
+	3) ./main
+
+========================================================================
+
+One step to make static library
+	1) Makefile

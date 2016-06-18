@@ -1,0 +1,284 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALERT	rules.h	7;"	d
+ALERT	test/rules.h	7;"	d
+AcNode	rules.h	/^}AcNode;$/;"	t	typeref:struct:_acNode
+AcNode	test/rules.h	/^}AcNode;$/;"	t	typeref:struct:_acNode
+AcNodeGPU	rules.h	/^}AcNodeGPU;$/;"	t	typeref:struct:_acNodeGPU
+AcNodeGPU	test/rules.h	/^}AcNodeGPU;$/;"	t	typeref:struct:_acNodeGPU
+AcQueue	rules.h	/^}AcQueue;$/;"	t	typeref:struct:_acQueue
+AcQueue	test/rules.h	/^}AcQueue;$/;"	t	typeref:struct:_acQueue
+CONTENT	rules.h	13;"	d
+CONTENT	test/rules.h	13;"	d
+DEPTH	rules.h	14;"	d
+DEPTH	test/rules.h	14;"	d
+DISTANCE	rules.h	17;"	d
+DISTANCE	test/rules.h	17;"	d
+FAST_PATTERN	rules.h	30;"	d
+FAST_PATTERN	test/rules.h	30;"	d
+HTTP_CLIENT_BODY	rules.h	20;"	d
+HTTP_CLIENT_BODY	test/rules.h	20;"	d
+HTTP_COOKIE	rules.h	21;"	d
+HTTP_COOKIE	test/rules.h	21;"	d
+HTTP_HEADER	rules.h	23;"	d
+HTTP_HEADER	test/rules.h	23;"	d
+HTTP_METHOD	rules.h	25;"	d
+HTTP_METHOD	test/rules.h	25;"	d
+HTTP_RAW_COOKIE	rules.h	22;"	d
+HTTP_RAW_COOKIE	test/rules.h	22;"	d
+HTTP_RAW_HEADER	rules.h	24;"	d
+HTTP_RAW_HEADER	test/rules.h	24;"	d
+HTTP_RAW_URI	rules.h	27;"	d
+HTTP_RAW_URI	test/rules.h	27;"	d
+HTTP_STAT_CODE	rules.h	28;"	d
+HTTP_STAT_CODE	test/rules.h	28;"	d
+HTTP_STAT_MESSAGE	rules.h	29;"	d
+HTTP_STAT_MESSAGE	test/rules.h	29;"	d
+HTTP_URI	rules.h	26;"	d
+HTTP_URI	test/rules.h	26;"	d
+ICMP	rules.h	10;"	d
+ICMP	test/rules.h	10;"	d
+INCLUDEFLAG	Makefile	/^INCLUDEFLAG = \/usr\/local\/cuda\/include $/;"	m
+IcmpListRoot	rules.h	/^    RuleListRoot *IcmpListRoot;$/;"	m	struct:_ListRoot
+IcmpListRoot	test/rules.h	/^    RuleListRoot *IcmpListRoot;$/;"	m	struct:_ListRoot
+IpAddrSet	rules.h	/^}IpAddrSet;$/;"	t	typeref:struct:_IpAddrSet
+IpAddrSet	test/rules.h	/^}IpAddrSet;$/;"	t	typeref:struct:_IpAddrSet
+IpListRoot	rules.h	/^    RuleListRoot *IpListRoot;$/;"	m	struct:_ListRoot
+IpListRoot	test/rules.h	/^    RuleListRoot *IpListRoot;$/;"	m	struct:_ListRoot
+LDFLAGS	test/Makefile	/^LDFLAGS = -L. -lnids -ldl -lpthread -lrt$/;"	m
+ListRoot	rules.h	/^}ListRoot;$/;"	t	typeref:struct:_ListRoot
+ListRoot	test/rules.h	/^}ListRoot;$/;"	t	typeref:struct:_ListRoot
+MAX_CH_BUF	parser.c	7;"	d	file:
+MAX_PORTS	rules.h	3;"	d
+MAX_PORTS	test/rules.h	3;"	d
+MAX_STATE	rules.h	4;"	d
+MAX_STATE	test/rules.h	4;"	d
+MSG	rules.h	12;"	d
+MSG	test/rules.h	12;"	d
+NOCASE	rules.h	18;"	d
+NOCASE	test/rules.h	18;"	d
+OFFSET	rules.h	15;"	d
+OFFSET	test/rules.h	15;"	d
+OptFpList	rules.h	/^}OptFpList;$/;"	t	typeref:struct:_OptFpList
+OptFpList	test/rules.h	/^}OptFpList;$/;"	t	typeref:struct:_OptFpList
+OptTreeNode	rules.h	/^}OptTreeNode;$/;"	t	typeref:struct:_OptTreeNode
+OptTreeNode	test/rules.h	/^}OptTreeNode;$/;"	t	typeref:struct:_OptTreeNode
+RAWBYTES	rules.h	19;"	d
+RAWBYTES	test/rules.h	19;"	d
+RuleListRoot	rules.h	/^}RuleListRoot;$/;"	t	typeref:struct:_RuleListRoot
+RuleListRoot	test/rules.h	/^}RuleListRoot;$/;"	t	typeref:struct:_RuleListRoot
+RuleSetRoot	rules.h	/^}RuleSetRoot;$/;"	t	typeref:struct:_RuleSetRoot
+RuleSetRoot	test/rules.h	/^}RuleSetRoot;$/;"	t	typeref:struct:_RuleSetRoot
+RuleTreeNode	rules.h	/^}RuleTreeNode;$/;"	t	typeref:struct:_RuleTreeNode
+RuleTreeNode	test/rules.h	/^}RuleTreeNode;$/;"	t	typeref:struct:_RuleTreeNode
+RuleTreeRoot	rules.h	/^}RuleTreeRoot;$/;"	t	typeref:struct:_RuleTreeRoot
+RuleTreeRoot	test/rules.h	/^}RuleTreeRoot;$/;"	t	typeref:struct:_RuleTreeRoot
+SYM_NUM	rules.h	5;"	d
+SYM_NUM	test/rules.h	5;"	d
+TCP	rules.h	8;"	d
+TCP	test/rules.h	8;"	d
+TcpListRoot	rules.h	/^    RuleListRoot *TcpListRoot;$/;"	m	struct:_ListRoot
+TcpListRoot	test/rules.h	/^    RuleListRoot *TcpListRoot;$/;"	m	struct:_ListRoot
+TmpRuleHeader	rules.h	/^}TmpRuleHeader;$/;"	t	typeref:struct:_TmpRuleHeader
+TmpRuleHeader	test/rules.h	/^}TmpRuleHeader;$/;"	t	typeref:struct:_TmpRuleHeader
+TmpRuleOption	rules.h	/^}TmpRuleOption;$/;"	t	typeref:struct:_TmpRuleOption
+TmpRuleOption	test/rules.h	/^}TmpRuleOption;$/;"	t	typeref:struct:_TmpRuleOption
+UDP	rules.h	9;"	d
+UDP	test/rules.h	9;"	d
+UdpListRoot	rules.h	/^    RuleListRoot *UdpListRoot;$/;"	m	struct:_ListRoot
+UdpListRoot	test/rules.h	/^    RuleListRoot *UdpListRoot;$/;"	m	struct:_ListRoot
+WITHIN	rules.h	16;"	d
+WITHIN	test/rules.h	16;"	d
+_IpAddrSet	rules.h	/^typedef struct _IpAddrSet$/;"	s
+_IpAddrSet	test/rules.h	/^typedef struct _IpAddrSet$/;"	s
+_ListRoot	rules.h	/^typedef struct _ListRoot$/;"	s
+_ListRoot	test/rules.h	/^typedef struct _ListRoot$/;"	s
+_OptFpList	rules.h	/^typedef struct _OptFpList$/;"	s
+_OptFpList	test/rules.h	/^typedef struct _OptFpList$/;"	s
+_OptTreeNode	rules.h	/^typedef struct _OptTreeNode$/;"	s
+_OptTreeNode	test/rules.h	/^typedef struct _OptTreeNode$/;"	s
+_RuleListRoot	rules.h	/^typedef struct _RuleListRoot$/;"	s
+_RuleListRoot	test/rules.h	/^typedef struct _RuleListRoot$/;"	s
+_RuleSetRoot	rules.h	/^typedef struct _RuleSetRoot$/;"	s
+_RuleSetRoot	test/rules.h	/^typedef struct _RuleSetRoot$/;"	s
+_RuleTreeNode	rules.h	/^typedef struct _RuleTreeNode$/;"	s
+_RuleTreeNode	test/rules.h	/^typedef struct _RuleTreeNode$/;"	s
+_RuleTreeRoot	rules.h	/^typedef struct _RuleTreeRoot$/;"	s
+_RuleTreeRoot	test/rules.h	/^typedef struct _RuleTreeRoot$/;"	s
+_TmpRuleHeader	rules.h	/^typedef struct _TmpRuleHeader$/;"	s
+_TmpRuleHeader	test/rules.h	/^typedef struct _TmpRuleHeader$/;"	s
+_TmpRuleOption	rules.h	/^typedef struct _TmpRuleOption$/;"	s
+_TmpRuleOption	test/rules.h	/^typedef struct _TmpRuleOption$/;"	s
+_acNode	rules.h	/^typedef struct _acNode$/;"	s
+_acNode	test/rules.h	/^typedef struct _acNode$/;"	s
+_acNodeGPU	rules.h	/^typedef struct _acNodeGPU$/;"	s
+_acNodeGPU	test/rules.h	/^typedef struct _acNodeGPU$/;"	s
+_acQueue	rules.h	/^typedef struct _acQueue$/;"	s
+_acQueue	test/rules.h	/^typedef struct _acQueue$/;"	s
+ac	rules.h	/^	AcNode *ac;$/;"	m	struct:_acQueue
+ac	test/rules.h	/^	AcNode *ac;$/;"	m	struct:_acQueue
+acArray	rules.h	/^	uint16_t acArray[MAX_STATE][256];$/;"	m	struct:_RuleSetRoot
+acArray	test/rules.h	/^	uint16_t acArray[MAX_STATE][256];$/;"	m	struct:_RuleSetRoot
+acGPU	rules.h	/^	uint16_t acGPU[MAX_STATE * 257];$/;"	m	struct:_RuleSetRoot
+acGPU	test/main.c	/^	uint16_t *acGPU;$/;"	v
+acGPU	test/rules.h	/^	uint16_t acGPU[MAX_STATE * 257];$/;"	m	struct:_RuleSetRoot
+assemblelistroot	parser.c	/^void assemblelistroot(ListRoot *listroot, RuleTreeNode *rtn)$/;"	f
+broNode	rules.h	/^	int broNode;$/;"	m	struct:_acNodeGPU
+broNode	rules.h	/^	struct _acNode *broNode;$/;"	m	struct:_acNode	typeref:struct:_acNode::_acNode
+broNode	test/rules.h	/^	int broNode;$/;"	m	struct:_acNodeGPU
+broNode	test/rules.h	/^	struct _acNode *broNode;$/;"	m	struct:_acNode	typeref:struct:_acNode::_acNode
+buildACarray	parser.c	/^void buildACarray(RuleSetRoot *rsr, OptFpList *fplist)$/;"	f
+buildContPattMatch	parser.c	/^AcNode *buildContPattMatch(AcNode *acNode, OptFpList *fplist)$/;"	f
+buildfailContPattMatch	parser.c	/^void buildfailContPattMatch(AcNode *acNode)$/;"	f
+buildfailfunc	parser.c	/^void buildfailfunc(RuleSetRoot *rsr)$/;"	f
+chdNode	rules.h	/^	int chdNode;$/;"	m	struct:_acNodeGPU
+chdNode	rules.h	/^	struct _acNode *chdNode;$/;"	m	struct:_acNode	typeref:struct:_acNode::_acNode
+chdNode	test/rules.h	/^	int chdNode;$/;"	m	struct:_acNodeGPU
+chdNode	test/rules.h	/^	struct _acNode *chdNode;$/;"	m	struct:_acNode	typeref:struct:_acNode::_acNode
+configrules	parser.c	/^ListRoot *configrules(char *filename)$/;"	f
+contId	rules.h	/^	int contId;$/;"	m	struct:_acNode
+contId	rules.h	/^	int contId;$/;"	m	struct:_acNodeGPU
+contId	test/rules.h	/^	int contId;$/;"	m	struct:_acNode
+contId	test/rules.h	/^	int contId;$/;"	m	struct:_acNodeGPU
+contIndex	parser.c	/^int contIndex = 1;$/;"	v
+contPatt	test/main.c	/^	AcNodeGPU *contPatt;$/;"	v
+contPattGPU	rules.h	/^	AcNodeGPU *contPattGPU;$/;"	m	struct:_RuleSetRoot
+contPattGPU	test/rules.h	/^	AcNodeGPU *contPattGPU;$/;"	m	struct:_RuleSetRoot
+contPattMatch	rules.h	/^	AcNode *contPattMatch;$/;"	m	struct:_RuleSetRoot
+contPattMatch	test/rules.h	/^	AcNode *contPattMatch;$/;"	m	struct:_RuleSetRoot
+context	rules.h	/^	char *context;$/;"	m	struct:_OptFpList
+context	rules.h	/^	char *context;$/;"	m	struct:_TmpRuleOption
+context	test/rules.h	/^	char *context;$/;"	m	struct:_OptFpList
+context	test/rules.h	/^	char *context;$/;"	m	struct:_TmpRuleOption
+create	parser.c	/^void create(RuleListRoot *rulelistroot)$/;"	f
+createarray	parser.c	/^void createarray(RuleTreeRoot *treeroot)$/;"	f
+depth	rules.h	/^	uint8_t depth;$/;"	m	struct:_OptFpList
+depth	rules.h	/^	uint8_t depth;$/;"	m	struct:_TmpRuleOption
+depth	test/rules.h	/^	uint8_t depth;$/;"	m	struct:_OptFpList
+depth	test/rules.h	/^	uint8_t depth;$/;"	m	struct:_TmpRuleOption
+dip	rules.h	/^    IpAddrSet *dip;$/;"	m	struct:_RuleTreeNode
+dip	rules.h	/^    IpAddrSet *dip;$/;"	m	struct:_TmpRuleHeader
+dip	test/rules.h	/^    IpAddrSet *dip;$/;"	m	struct:_RuleTreeNode
+dip	test/rules.h	/^    IpAddrSet *dip;$/;"	m	struct:_TmpRuleHeader
+distance	rules.h	/^	uint8_t distance;$/;"	m	struct:_OptFpList
+distance	rules.h	/^	uint8_t distance;$/;"	m	struct:_TmpRuleOption
+distance	test/rules.h	/^	uint8_t distance;$/;"	m	struct:_OptFpList
+distance	test/rules.h	/^	uint8_t distance;$/;"	m	struct:_TmpRuleOption
+down	rules.h	/^	struct _OptTreeNode *down;$/;"	m	struct:_RuleTreeNode	typeref:struct:_RuleTreeNode::_OptTreeNode
+down	test/rules.h	/^	struct _OptTreeNode *down;$/;"	m	struct:_RuleTreeNode	typeref:struct:_RuleTreeNode::_OptTreeNode
+duplicatertn	parser.c	/^RuleTreeNode *duplicatertn(RuleTreeNode *rtn)$/;"	f
+evalIndex	rules.h	/^	int evalIndex; \/\/ where this value sits in the evaluation sets$/;"	m	struct:_OptTreeNode
+evalIndex	test/rules.h	/^	int evalIndex; \/\/ where this value sits in the evaluation sets$/;"	m	struct:_OptTreeNode
+failNode	rules.h	/^	int failNode;$/;"	m	struct:_acNodeGPU
+failNode	rules.h	/^	struct _acNode *failNode;$/;"	m	struct:_acNode	typeref:struct:_acNode::_acNode
+failNode	test/rules.h	/^	int failNode;$/;"	m	struct:_acNodeGPU
+failNode	test/rules.h	/^	struct _acNode *failNode;$/;"	m	struct:_acNode	typeref:struct:_acNode::_acNode
+failure	rules.h	/^	int16_t failure[MAX_STATE];$/;"	m	struct:_RuleSetRoot
+failure	test/rules.h	/^	int16_t failure[MAX_STATE];$/;"	m	struct:_RuleSetRoot
+flags	rules.h	/^	int flags; \/\/ 32bits$/;"	m	struct:_RuleTreeNode
+flags	rules.h	/^	uint16_t flags;$/;"	m	struct:_TmpRuleOption
+flags	rules.h	/^	uint32_t flags; \/\/ 32bits$/;"	m	struct:_TmpRuleHeader
+flags	rules.h	/^    uint16_t flags;$/;"	m	struct:_OptFpList
+flags	test/rules.h	/^	int flags; \/\/ 32bits$/;"	m	struct:_RuleTreeNode
+flags	test/rules.h	/^	uint16_t flags;$/;"	m	struct:_TmpRuleOption
+flags	test/rules.h	/^	uint32_t flags; \/\/ 32bits$/;"	m	struct:_TmpRuleHeader
+flags	test/rules.h	/^    uint16_t flags;$/;"	m	struct:_OptFpList
+freeacnode	free.c	/^void freeacnode(AcNode *contPattMatch)$/;"	f
+freeall	free.c	/^void freeall(ListRoot *listroot)$/;"	f
+freeoptfplist	free.c	/^void freeoptfplist(OptFpList *fp)$/;"	f
+freeopttreenode	free.c	/^void freeopttreenode(OptTreeNode *opt)$/;"	f
+freerulelistroot	free.c	/^void freerulelistroot(RuleListRoot *rulelistroot)$/;"	f
+freerulesetroot	free.c	/^void freerulesetroot(RuleSetRoot *rsr)$/;"	f
+freeruletreenode	free.c	/^void freeruletreenode(RuleTreeNode *rtn)$/;"	f
+hdp	rules.h	/^    uint16_t hdp; \/\/ 16bits$/;"	m	struct:_TmpRuleHeader
+hdp	rules.h	/^    uint16_t hdp[MAX_PORTS]; \/\/ 16bits$/;"	m	struct:_RuleTreeNode
+hdp	test/rules.h	/^    uint16_t hdp; \/\/ 16bits$/;"	m	struct:_TmpRuleHeader
+hdp	test/rules.h	/^    uint16_t hdp[MAX_PORTS]; \/\/ 16bits$/;"	m	struct:_RuleTreeNode
+index	rules.h	/^	int index; \/\/ contIndex$/;"	m	struct:_OptFpList
+index	test/rules.h	/^	int index; \/\/ contIndex$/;"	m	struct:_OptFpList
+ip	rules.h	/^	uint32_t ip;$/;"	m	struct:_IpAddrSet
+ip	test/rules.h	/^	uint32_t ip;$/;"	m	struct:_IpAddrSet
+ldp	rules.h	/^	uint16_t ldp;$/;"	m	struct:_TmpRuleHeader
+ldp	rules.h	/^	uint16_t ldp[MAX_PORTS];$/;"	m	struct:_RuleTreeNode
+ldp	test/rules.h	/^	uint16_t ldp;$/;"	m	struct:_TmpRuleHeader
+ldp	test/rules.h	/^	uint16_t ldp[MAX_PORTS];$/;"	m	struct:_RuleTreeNode
+main	main.c	/^int main()$/;"	f
+main	test/main.c	/^int main()$/;"	f
+msg	rules.h	/^	char *msg;$/;"	m	struct:_OptTreeNode
+msg	rules.h	/^	char *msg;$/;"	m	struct:_TmpRuleOption
+msg	test/rules.h	/^	char *msg;$/;"	m	struct:_OptTreeNode
+msg	test/rules.h	/^	char *msg;$/;"	m	struct:_TmpRuleOption
+newState	parser.c	/^int newState = 0; \/\/ newState must be less than or equal to 2^16$/;"	v
+next	rules.h	/^	struct _OptFpList *next;$/;"	m	struct:_OptFpList	typeref:struct:_OptFpList::_OptFpList
+next	rules.h	/^	struct _OptTreeNode *next;$/;"	m	struct:_OptTreeNode	typeref:struct:_OptTreeNode::_OptTreeNode
+next	rules.h	/^	struct _acQueue *next;$/;"	m	struct:_acQueue	typeref:struct:_acQueue::_acQueue
+next	test/rules.h	/^	struct _OptFpList *next;$/;"	m	struct:_OptFpList	typeref:struct:_OptFpList::_OptFpList
+next	test/rules.h	/^	struct _OptTreeNode *next;$/;"	m	struct:_OptTreeNode	typeref:struct:_OptTreeNode::_OptTreeNode
+next	test/rules.h	/^	struct _acQueue *next;$/;"	m	struct:_acQueue	typeref:struct:_acQueue::_acQueue
+nodeNum	parser.c	/^int nodeNum = 0;$/;"	v
+nodeNum	rules.h	/^	int nodeNum;$/;"	m	struct:_acNode
+nodeNum	rules.h	/^	uint16_t nodeNum;$/;"	m	struct:_RuleSetRoot
+nodeNum	test/rules.h	/^	int nodeNum;$/;"	m	struct:_acNode
+nodeNum	test/rules.h	/^	uint16_t nodeNum;$/;"	m	struct:_RuleSetRoot
+offset	rules.h	/^	uint8_t offset;$/;"	m	struct:_OptFpList
+offset	rules.h	/^	uint8_t offset;$/;"	m	struct:_TmpRuleOption
+offset	test/rules.h	/^	uint8_t offset;$/;"	m	struct:_OptFpList
+offset	test/rules.h	/^	uint8_t offset;$/;"	m	struct:_TmpRuleOption
+opt_func	rules.h	/^    OptFpList *opt_func;$/;"	m	struct:_OptTreeNode
+opt_func	test/rules.h	/^    OptFpList *opt_func;$/;"	m	struct:_OptTreeNode
+parseruleheader	parser.c	/^RuleTreeNode *parseruleheader(char *ch_buffer)$/;"	f
+parseruleoption	parser.c	/^RuleTreeNode *parseruleoption(RuleTreeNode *rtn, char *ch_buffer, int id)$/;"	f
+pattId	rules.h	/^	int pattId;$/;"	m	struct:_acNode
+pattId	rules.h	/^	int pattId;$/;"	m	struct:_acNodeGPU
+pattId	test/rules.h	/^	int pattId;$/;"	m	struct:_acNode
+pattId	test/rules.h	/^	int pattId;$/;"	m	struct:_acNodeGPU
+pattNum	parser.c	/^int pattNum = 0;$/;"	v
+pkt	test/main.c	/^	char *pkt;$/;"	v
+pkt_len	test/main.c	/^	uint16_t *pkt_len;$/;"	v
+precreatearray	parser.c	/^void precreatearray(ListRoot *listroot)$/;"	f
+print	test.c	/^void print(ListRoot *listroot)$/;"	f
+printAcNodeTree	test.c	/^void printAcNodeTree(AcNode *acNode, int i)$/;"	f
+prmDstGroup	rules.h	/^    RuleTreeRoot *prmDstGroup[MAX_PORTS];$/;"	m	struct:_RuleListRoot
+prmDstGroup	test/rules.h	/^    RuleTreeRoot *prmDstGroup[MAX_PORTS];$/;"	m	struct:_RuleListRoot
+prmGeneric	rules.h	/^    RuleTreeRoot *prmGeneric;$/;"	m	struct:_RuleListRoot
+prmGeneric	test/rules.h	/^    RuleTreeRoot *prmGeneric;$/;"	m	struct:_RuleListRoot
+prmSrcGroup	rules.h	/^    RuleTreeRoot *prmSrcGroup[MAX_PORTS];$/;"	m	struct:_RuleListRoot
+prmSrcGroup	test/rules.h	/^    RuleTreeRoot *prmSrcGroup[MAX_PORTS];$/;"	m	struct:_RuleListRoot
+readfile	parser.c	/^int readfile(ListRoot* listroot, char *pFName)$/;"	f
+res	test/main.c	/^	uint16_t *res;$/;"	v
+right	rules.h	/^	struct _RuleTreeNode *right;$/;"	m	struct:_RuleTreeNode	typeref:struct:_RuleTreeNode::_RuleTreeNode
+right	test/rules.h	/^	struct _RuleTreeNode *right;$/;"	m	struct:_RuleTreeNode	typeref:struct:_RuleTreeNode::_RuleTreeNode
+root	rules.h	/^	int root;$/;"	m	struct:_acNode
+root	rules.h	/^	int root;$/;"	m	struct:_acNodeGPU
+root	test/rules.h	/^	int root;$/;"	m	struct:_acNode
+root	test/rules.h	/^	int root;$/;"	m	struct:_acNodeGPU
+rsr	rules.h	/^    RuleSetRoot *rsr;$/;"	m	struct:_RuleTreeRoot
+rsr	test/rules.h	/^    RuleSetRoot *rsr;$/;"	m	struct:_RuleTreeRoot
+rtn	rules.h	/^	struct _RuleTreeNode *rtn;$/;"	m	struct:_OptTreeNode	typeref:struct:_OptTreeNode::_RuleTreeNode
+rtn	rules.h	/^    RuleTreeNode *rtn;$/;"	m	struct:_RuleTreeRoot
+rtn	test/rules.h	/^	struct _RuleTreeNode *rtn;$/;"	m	struct:_OptTreeNode	typeref:struct:_OptTreeNode::_RuleTreeNode
+rtn	test/rules.h	/^    RuleTreeNode *rtn;$/;"	m	struct:_RuleTreeRoot
+sip	rules.h	/^	IpAddrSet *sip;$/;"	m	struct:_RuleTreeNode
+sip	rules.h	/^	IpAddrSet *sip;$/;"	m	struct:_TmpRuleHeader
+sip	test/rules.h	/^	IpAddrSet *sip;$/;"	m	struct:_RuleTreeNode
+sip	test/rules.h	/^	IpAddrSet *sip;$/;"	m	struct:_TmpRuleHeader
+str	rules.h	/^	char *str;$/;"	m	struct:_acNode
+str	test/rules.h	/^	char *str;$/;"	m	struct:_acNode
+test	test.c	/^void test(ListRoot *listroot)$/;"	f
+transAc	parser.c	/^void transAc(RuleSetRoot *rsr)$/;"	f
+transContPattMatch	parser.c	/^void transContPattMatch(RuleSetRoot *rsr, AcNode *acnode)$/;"	f
+transmission	parser.c	/^void transmission(RuleSetRoot *rsr)$/;"	f
+type	rules.h	/^	int type;$/;"	m	struct:_OptTreeNode
+type	rules.h	/^    int type;$/;"	m	struct:_RuleTreeNode
+type	rules.h	/^    int type;$/;"	m	struct:_TmpRuleHeader
+type	test/rules.h	/^	int type;$/;"	m	struct:_OptTreeNode
+type	test/rules.h	/^    int type;$/;"	m	struct:_RuleTreeNode
+type	test/rules.h	/^    int type;$/;"	m	struct:_TmpRuleHeader
+within	rules.h	/^	uint8_t within;$/;"	m	struct:_OptFpList
+within	rules.h	/^	uint8_t within;$/;"	m	struct:_TmpRuleOption
+within	test/rules.h	/^	uint8_t within;$/;"	m	struct:_OptFpList
+within	test/rules.h	/^	uint8_t within;$/;"	m	struct:_TmpRuleOption
